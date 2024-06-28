@@ -52,8 +52,8 @@ const App: React.FC = () => {
   const calculateCircleRadius = (heightMslMeters: number): number => {
     // Convert height from meters to feet
     const heightMslFeet = heightMslMeters * 3.28084;
-    // Calculate radius based on the formula: 1.375 * sqrt(height in feet)
-    return 1.375 * Math.sqrt(heightMslFeet);
+    // Calculate radius based on the formula: 1.375 * sqrt(height in feet) from nm to meters
+    return (1.375 * Math.sqrt(heightMslFeet)) * 1852;
   };
 
   const handleRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
