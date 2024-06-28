@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const [artccs, setArtccs] = useState<Artcc[]>([]);
   const [selectedTransceivers, setSelectedTransceivers] = useState<Transceiver[]>([]);
   const [circleRadius, setCircleRadius] = useState<number>(5000); // Default radius in meters
+  const [actualRange, setActualRange] = useState<boolean>(false); // State for actual range checkbox
 
   useEffect(() => {
     fetch('/api/artccs/')
@@ -41,13 +42,31 @@ const App: React.FC = () => {
     }
   };
 
+  const toggleActualRange = () => {
+    setActualRange(!actualRange);
+    if (actualRange) {
+      setCircleRadius(5000); // Reset circle radius to default when switching back from actual range
+    }
+  };
+
+  const calculateCircleRadius = (heightMslMeters: number): number => {
+    // Convert height from meters to feet
+    const heightMslFeet = heightMslMeters * 3.28084;
+    // Calculate radius based on the formula: 1.375 * sqrt(height in feet)
+    return 1.375 * Math.sqrt(heightMslFeet);
+  };
+
+  const handleRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCircleRadius(Number(e.target.value));
+  };
+
   // Determine the center of the map based on the first transceiver of the selected ARTCC
   const mapCenter: LatLngTuple = selectedTransceivers.length > 0
     ? [selectedTransceivers[0].location.lat, selectedTransceivers[0].location.lon] as LatLngTuple
     : [37.7749, -122.4194]; // Default to San Francisco if no ARTCC is selected
 
   return (
-    <div style={{ textAlign: 'center', width: "100vw" }}>
+    <div style={{ textAlign: 'center' , width: "100vw"}}>
       <h1>ARTCC Transceiver Map</h1>
       <div>
         <label>Select ARTCC: </label>
@@ -65,9 +84,18 @@ const App: React.FC = () => {
           max="50000"
           step="1000"
           value={circleRadius}
-          onChange={(e) => setCircleRadius(Number(e.target.value))}
+          onChange={handleRadiusChange}
+          disabled={actualRange}
         />
         <span>{circleRadius} meters</span>
+        <label>
+          <input
+            type="checkbox"
+            checked={actualRange}
+            onChange={toggleActualRange}
+          />
+          Actual Range
+        </label>
       </div>
 
       {selectedTransceivers.length > 0 && (
@@ -76,21 +104,27 @@ const App: React.FC = () => {
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {selectedTransceivers.map(transceiver => (
-              <Circle
-                key={transceiver.id}
-                center={[transceiver.location.lat, transceiver.location.lon] as LatLngTuple}
-                radius={circleRadius}
-              >
-                <Popup>
-                  <div>
-                    <strong>{transceiver.name}</strong><br />
-                    Height MSL: {transceiver.heightMslMeters} meters<br />
-                    Height AGL: {transceiver.heightAglMeters} meters
-                  </div>
-                </Popup>
-              </Circle>
-            ))}
+            {selectedTransceivers.map(transceiver => {
+              const radius = actualRange
+                ? calculateCircleRadius(transceiver.heightMslMeters)
+                : circleRadius;
+
+              return (
+                <Circle
+                  key={transceiver.id}
+                  center={[transceiver.location.lat, transceiver.location.lon] as LatLngTuple}
+                  radius={radius}
+                >
+                  <Popup>
+                    <div>
+                      <strong>{transceiver.name}</strong><br />
+                      Height MSL: {transceiver.heightMslMeters} meters<br />
+                      Height AGL: {transceiver.heightAglMeters} meters
+                    </div>
+                  </Popup>
+                </Circle>
+              );
+            })}
           </MapContainer>
         </div>
       )}
