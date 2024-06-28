@@ -34,11 +34,6 @@ app.get('/api/artccs', (req: Request, res: Response) => {
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// // Handles any requests that don't match the above
-// app.get('*', (req: Request, res: Response) => {
-//   res.sendFile(path.join(__dirname, '../dist', 'index.html'));
-// });
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
