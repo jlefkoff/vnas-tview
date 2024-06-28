@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const [circleRadius, setCircleRadius] = useState<number>(5000); // Default radius in meters
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/artccs/')
+    fetch('/api/artccs/')
       .then(response => response.json())
       .then(data => setArtccs(data));
   }, []);
