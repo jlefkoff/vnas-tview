@@ -47,7 +47,7 @@ const App: React.FC = () => {
     : [37.7749, -122.4194]; // Default to San Francisco if no ARTCC is selected
 
   return (
-    <div>
+    <div style={{ textAlign: 'center', width: "100vw" }}>
       <h1>ARTCC Transceiver Map</h1>
       <div>
         <label>Select ARTCC: </label>
@@ -71,8 +71,8 @@ const App: React.FC = () => {
       </div>
 
       {selectedTransceivers.length > 0 && (
-        <div style={{ height: "80vh", width: "100%" }}>
-          <MapContainer center={mapCenter} zoom={8} style={{ height: "100%", width: "100%" }}>
+        <div style={{ height: '80vh', width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <MapContainer center={mapCenter} zoom={8} style={{ height: '100%', width: '100%', maxWidth: '100vw' }}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
