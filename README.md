@@ -1,30 +1,19 @@
-# React + TypeScript + Vite
+# vNAS Transceiver Viewer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This web application fetches virtual transceiver data that is used in CRC for AFV integration. It assists facility engineers in determining if there is adequate coverage across their respective ARTCC.
 
-Currently, two official plugins are available:
+The in-production version of this site can be veiwed (here)[https://vnas-tmap.jlefkoff.com/]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Development
 
-## Expanding the ESLint configuration
+This is a vite/react web app for the frontend, and a small express js app to serve and proxy the API requests. It can be developed by running:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+`npm install`
+`npx vite build --base=/`
+`npx tsx server/server.ts`
 
-- Configure the top-level `parserOptions` property like this:
+and going to (localhost:3000)[http://localhost:3000]
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+For production purposes, it is run as a docker container. You can also build/run this on your local machine with:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+`docker compose up --build`
